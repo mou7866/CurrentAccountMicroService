@@ -1,0 +1,73 @@
+﻿@page "/transactionhistory"
+
+@using Banking.CurrentAccount.UI.Services
+@using Banking.CurrentAccount.Application.Features.Queries.GetCurrentAccountTransactionHistory
+@using Banking.CurrentAccount.Application.Wrappers
+@inject ICurrentAccountService CurrentAccountService
+
+<h1>Current Accounts History</h1>
+
+
+@if (results == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Date</th>
+                <th>Description</th>
+                <th>Transaction Type</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var result in results.Data)
+            {
+                <tr>
+                    <td>@result.TransactionId</td>
+                    <td>@result.TransactionDate.ToShortDateString()</td>
+                    <td>@result.TransactionDescription</td>
+                    <td>@result.TransactionType.ToString()</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    @if (results != null && results.TotalPages > 1)
+    {
+        <div class="d-flex justify-content-end">
+            <ul class="pagination">                
+                <li class="page-item @(results.PageNumber == 0 ? "disabled": "")" @onclick="@(() => LoadData(results.PageNumber-1))" title="Previous">
+                    <a class="page-link" href="javascript:;" aria-disabled="@(results.PageNumber == 0 ? "true": null)">Previous</a>
+                </li>
+                <li class="page-item @(results.PageNumber + 1 < results.TotalPages ? "" : "disabled")" @onclick="@(() => LoadData(results.PageNumber+1))" title="Next">
+                    <a class="page-link" href="javascript:;" aria-disabled="@(results.PageNumber + 1 < results.TotalPages ? null: "true")">Next</a>
+                </li>
+            </ul>
+        </div>
+    }
+}
+
+@code {
+    private GetCurrentAccountTransactionHistoryParameter filter = new GetCurrentAccountTransactionHistoryParameter()
+    {
+        AccountId = 1,
+        CustomerId = 1,
+        PageNumber = 0,
+        PageSize = 5
+    };
+    private PagedResponse<IEnumerable<GetCurrentAccountTransactionHistoryViewModel>> results;
+
+    protected override async Task OnInitializedAsync()
+    {
+        results = await CurrentAccountService.GetCurrentAccountHistory(filter);
+    }
+
+    private async Task LoadData(int pageNumber)
+    {
+        filter.PageNumber = pageNumber;
+        results = await CurrentAccountService.GetCurrentAccountHistory(filter);
+    }
+}
