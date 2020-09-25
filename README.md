@@ -36,6 +36,9 @@ If you would like to use SQL Server, you will need to update **WebUI/appsettings
 For this project, I have used the best practice design for SOLID, CQRS and inward dependencies. 
 All user authentication has been developed on the API but not implemented on the UI. A simple diagram is on draw.io: https://drive.google.com/file/d/1rVOUa7RDnhRuGRTtckdUKVHI-aApMElv/view?usp=sharing
 
+The unit tests that have been developed:
+- All mapped objects have been tested
+- The command query for the Get transaction history
 
 ### Domain
 
