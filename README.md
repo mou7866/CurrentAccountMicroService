@@ -52,7 +52,7 @@ This layer contains all application logic. It is dependent on the domain layer, 
 
 This layer contains classes for accessing databases
 
-### WebUI
+### UI and API
 
 This layer has 2 projects that are the entry points of the application. 
 - WebAPI 
